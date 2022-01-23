@@ -3,13 +3,8 @@ function Scheduler(concurrency) {
     let _current = 0;
     let queue = [];
 
-    function add(fn, resolve, reject) {
-        queue.push([fn, resolve, reject]);
-        run();
-    }
-
-    // run is like recursion
-    function run() {
+    // start is recursion
+    function start() {
     	// if queue is empty, reutrn
     	// if hit the limit, return
         if (queue.length === 0 || _concurrency === _current) return;
@@ -19,20 +14,15 @@ function Scheduler(concurrency) {
         const [fn, resolve, reject] = queue.shift();
         // call fn and wait for promise
         fn().then((res) => {
-        	// call next for more
-        	next()
+            _current--;
+            start();
         	// this helps fn get its res in requestHelper
         	resolve(res)
         }).catch((err) => {
-        	next()
+            _current--;
+            start();
         	reject(err)
         });
-    }
-
-    // when one promise is done, decrease _current and call run()
-    function next() {
-        _current--;
-        run();
     }
 
     // return a helper, take fn as the first argument
@@ -40,7 +30,8 @@ function Scheduler(concurrency) {
     	// wrap fn in promise and return, and push fn, resolve and reject of this fn to queue 
     	// IMPORTANT, this helps the application to call the correct callback when fn is done
 		return new Promise((resolve, reject) => {
-			add(fn, resolve ,reject)
+            queue.push([fn, resolve, reject]);
+            start()
         })
     }
 }
@@ -51,12 +42,12 @@ const request = function() {
        setTimeout(() => {
            resolve();
        }, 1000);
-	})	
+	})
 }
 
 // call async function 100 times
 const requestHelper = Scheduler(6);
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 25; i++) {
 	requestHelper(request)
 	.then((res) => {
 		console.log(i)
