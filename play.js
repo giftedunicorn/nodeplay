@@ -44,9 +44,9 @@ function saveInput(id){
   console.log('Saving data', id);
 }
 const testDebounce = debounce((id) => saveInput(id));
-setInterval(() => {
-	testDebounce(12)
-}, 250)
+// setInterval(() => {
+// 	testDebounce(12)
+// }, 250)
 
 const throttle = function(fn, timeout = 500) {
 	let waiting = false
@@ -64,9 +64,9 @@ function saveInput(id){
   console.log('Saving data', id);
 }
 const testThrottle = throttle((id) => saveInput(id));
-setInterval(() => {
-	testThrottle(15)
-}, 250)
+// setInterval(() => {
+// 	testThrottle(15)
+// }, 250)
 
 // promise all
 const promiseAll = function(inputs) {
@@ -177,9 +177,163 @@ let reduceRes = arr.reduce((a, b) => {
 console.log('myReduce', myReduceRes)
 console.log('reduce', reduceRes)
 
-// new
-// bind
-// AJAX
+// AJAX 
+// function ajax(method, url, body = {}) {
+// 	return new Promise((resolve, reject) => {
+// 		let xhr = new XMLHttpRequest()
+// 		// 1. define request
+// 		xhr.open(method, url, true)
+// .     xhr.setRequestHeader("Content-Type", "application/json");
+// 		// 2. define response
+// 		xhr.onload = () => {
+// 			if (xhr.status >= 200 && xhr.status < 300) {
+// 				let res = xhr.response
+// 				resolve(res)
+// 			} else {
+// 				reject()
+// 			}
+// 		}
+// 		// 3. define error
+// 		xhr.onerror = () => {
+// 			reject()
+// 		}
+// 		// 4. send request
+// 		xhr.send() // get
+// 		// xhr.send(body) // post
+// 	})
+// }
+// ajax('GET', 'https://ipv4.icanhazip.com/')
+// .then((res) => {
+// 	console.log(res)
+// })
+
 // myInstanceof
+const myInstanceof = function(original, target) {
+	let proto = original.__proto__
+	while (proto) {
+		if (proto === target.prototype) {
+			return true
+		}
+		proto = proto.__proto__
+	}
+
+	return false
+}
+const myInstanceofTest = [1,2,3]
+console.log(myInstanceof(myInstanceofTest, Array));  // true
+console.log(myInstanceof(myInstanceofTest, Object));  // true
+console.log(myInstanceof(myInstanceofTest, Function));  // false
+
+// new
+const myNew = function(fn, ...args) {
+	let obj = Object.create(fn.prototype)
+	let res = fn.apply(obj, args)
+	if (res instanceof Object) {
+		return res
+	} else {
+		return obj
+	}
+}
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+const person = myNew(Person, 'fl', 32)
+console.log(person)
+
+// call
+Function.prototype.myCall = function(context, ...args) {
+	let obj = context || window
+	obj.fn = this
+	let res = obj.fn(...args)
+	delete obj.fn
+	return res
+}
+
+// apply
+Function.prototype.myApply = function(context, arr) {
+	// 定义 this，上下文
+	let obj = context || window
+	// 函数放进上下文的fn中
+	obj.fn = this
+	// 执行 fn，这样做fn就可以看到context了，闭包
+	let res = obj.fn(...arr)
+	// 要删除 fn
+	delete obj.fn
+	return res
+}
+const obj = {
+	name: 'alex'
+}
+const myApplyTestFn = function(a, b) {
+	console.log(a,b)
+	console.log(this.name)
+}
+console.log('myCall', myApplyTestFn.myCall(obj, 1,2))
+console.log('myApply', myApplyTestFn.myApply(obj, [1,2]))
+
+// bind
+Function.prototype.myBind = function(context) {
+	const fn = this
+	const arr = [...arguments].slice(1)
+
+	return function(...args) {
+		return fn.apply(context, [...arr, ...args])
+	}
+}
+const context = {
+	name: 'alex'
+}
+const myBindTestFn = function(name, age, school){
+	console.log(name) // 'An'
+	console.log(age) // 22
+	console.log(school) // '家里蹲大学'
+}
+let result = myBindTestFn.myBind(context, 'Ann')
+result(32, '126')
+
+// curry
+// EventEmitter
+// DOM2JSON
+
 // json to string
+const jsonToString = function(obj) {
+	let str = `{`
+
+	let keys = Object.keys(obj)
+	for (let i = 0; i < keys.length; i++) {
+		let key = keys[i]
+		let val = obj[key]
+		if (Array.isArray(val)) {
+			let arr = `[`
+			for (let j = 0; j < val.length; j++) {
+				let item = val[j]
+				arr = `${arr}${item}`
+				if (j !== val.length - 1) arr = `${arr},`
+			}
+			str = `${str}"${key}":${arr}]`
+		} else if (typeof val === 'object') {
+			let res = jsonToString(val)
+			str = `${str}"${key}":${res}`
+		} else {
+			str = `${str}"${key}":${val}`
+		}
+		if (i !== keys.length - 1) str = `${str},`
+	}
+
+	str = `${str}}`
+	return str
+}
+let jsonToStringTest = {
+    a: 11,
+    b: {
+        b: 22,
+        c: {
+            D: 33,
+            e: [44,55,66]
+        }
+    }
+};
+console.log(JSON.stringify(jsonToStringTest))
+console.log(jsonToString(jsonToStringTest))
 
