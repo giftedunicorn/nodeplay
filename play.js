@@ -1,3 +1,18 @@
+function test () {
+   console.log('start')
+    setTimeout(() => {
+        console.log('children2')
+        Promise.resolve().then(() => {console.log('children2-1')})
+    }, 0)
+    setTimeout(() => {
+        console.log('children3')
+        Promise.resolve().then(() => {console.log('children3-1')})
+    }, 0)
+    Promise.resolve().then(() => {console.log('children1')})
+    console.log('end') 
+}
+
+test()
 
 // // deep clone
 // const deepClone = function(obj) {
@@ -123,19 +138,21 @@
 
 // // promise controll
 // const scheduler = function(max = 3) {
-// 	let current = 0
+// 	let currentJobs = 0
 // 	let queue = []
 
 // 	function start() {
-// 		if (queue.length === 0 || current >= max) return
+// 		if (queue.length === 0 || currentJobs >= max) return
 
-// 		current++
+// 		currentJobs++
 // 		let [fn, resolve, reject] = queue.shift()
 // 		fn.apply(this).then((res) => {
-// 			current--
+// 			currentJobs--
 // 			start()
 // 			resolve(res)
 // 		}).catch((err) => {
+// 			currentJobs--
+// 			start()
 // 			reject(err)
 // 		})
 // 	}
@@ -156,10 +173,10 @@
 // }
 
 // // reduce
-// Array.prototype.myReduce = function(fn, num) {
+// Array.prototype.myReduce = function(fn, initialValue) {
 // 	let nums = this
 // 	let res = 0
-// 	if (num) res = num
+// 	if (initialValue) res = initialValue
 
 // 	for (let i = 0; i < nums.length; i++) {
 // 		res = fn(res, nums[i])
@@ -226,12 +243,13 @@
 
 // // new
 // const myNew = function(fn, ...args) {
-// 	let obj = Object.create(fn.prototype)
-// 	let res = fn.apply(obj, args)
+// 	let context = Object.create(fn.prototype)
+// 	let res = fn.apply(context, args)
+// 	// if res is undefined and nothing to return, return context
 // 	if (res instanceof Object) {
 // 		return res
 // 	} else {
-// 		return obj
+// 		return context
 // 	}
 // }
 // function Person(name, age) {
@@ -275,10 +293,11 @@
 // // bind
 // Function.prototype.myBind = function(context) {
 // 	const fn = this
-// 	const arr = [...arguments].slice(1)
+// 	const args = [...arguments].slice(1)
 
-// 	return function(...args) {
-// 		return fn.apply(context, [...arr, ...args])
+// 	return function(...innerArgs) {
+// 		let moreArgs = [...args, ...innerArgs]
+// 		return fn.apply(context, moreArgs)
 // 	}
 // }
 // const context = {
@@ -392,43 +411,47 @@
   ]
 }
 */
-const dom2json = function(domTree) {
-	// create an obj
-	let obj = {}
-	// get the tag name
-	obj.tag = domTree.tagName
-	// setup array for children
-	obj.children = []
-	// iterate each child node
-	domTree.childNodes.forEach((child) => {
-		// dfs, it will return json of this child
-		obj.children.push(dom2json(child))
-	})
-	// return obj
-	return obj
-}
+// const dom2json = function(domTree) {
+// 	// create an obj
+// 	let obj = {}
+// 	// get the tag name
+// 	obj.tag = domTree.tagName
+// 	// setup array for children
+// 	obj.children = []
+// 	// iterate each child node
+// 	domTree.childNodes.forEach((child) => {
+// 		// dfs, it will return json of this child
+// 		obj.children.push(dom2json(child))
+// 	})
+// 	// return obj
+// 	return obj
+// }
 
 // curry
-const myCurry = function(fn) {
-	// fn.length gives the length of arguments of fn
-	let length = fn.length
-	// get arguments from myCurry
-	let args = [...arguments].slice(1)
+// const myCurry = function(fn) {
+// 	// fn.length gives the length of arguments of fn
+// 	let length = fn.length
+// 	// get arguments from myCurry
+// 	let args = [...arguments].slice(1)
 
-	return function(...innerArgs) {
-		// concat myCurry and currying arguments
-		let finalArgs = [...args, ...innerArgs]
-		// if current length === fn.length, we can return the result
-		if (length <= finalArgs.length) return fn.apply(this, finalArgs)
-		// if not yet finished, recursion and call myCurry.apply with the correct arguments
-		else return myCurry.apply(this, [fn, ...finalArgs])
-	}
-}
-function sum(a, b, c) {
-  return a + b + c;
-}
-let currying = myCurry(sum)
-console.log(currying(1)(2)(3))
-console.log(currying(1,2,3))
+// 	return function(...innerArgs) {
+// 		// concat myCurry and currying arguments
+// 		let moreArgs = [...args, ...innerArgs]
+// 		// if current length === fn.length, we can return the result
+// 		if (length <= moreArgs.length) return fn.apply(this, moreArgs)
+// 		// if not yet finished, recursion and call myCurry.apply with the correct arguments
+// 		else return myCurry.apply(this, [fn, ...moreArgs])
+// 	}
+// }
+// function sum(a, b, c) {
+//   return a + b + c;
+// }
+// let currying = myCurry(sum)
+// console.log(currying(1)(2)(3))
+// console.log(currying(1,2,3))
 
 // EventEmitter
+// tree to list
+// list to tree
+// path to obj
+// obj to path
