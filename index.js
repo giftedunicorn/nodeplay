@@ -1,3 +1,46 @@
+let input = [7,15 ,6,10, 13, 9]
+var demo = function(n) {
+    let memo = Array(input.length).fill(0)
+    return helper(n, 0)
+}
+var helper = function(n, index) {
+    if (input.length <= index) {
+        return 0
+    }
+    if (n < input[index]) {
+        return -1
+    }
+    
+    // find the next gas station
+    let next = index
+    let gas = n
+    while (gas > 0) {
+        gas -= input[next]
+        next++
+    }
+    let res = helper(n, next)
+    if (res !== -1) return res + 1
+    
+    return res
+}
+console.log(demo(20))
+
+// function test () {
+//    console.log('start')
+//     setTimeout(() => {
+//         console.log('children2')
+//         Promise.resolve().then(() => {console.log('children2-1')})
+//     }, 0)
+//     setTimeout(() => {
+//         console.log('children3')
+//         Promise.resolve().then(() => {console.log('children3-1')})
+//     }, 0)
+//     Promise.resolve().then(() => {console.log('children1')})
+//     console.log('end') 
+// }
+
+// test()
+
 function Scheduler(concurrency) {
     let _concurrency = concurrency || 2
     let _current = 0;
