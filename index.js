@@ -1,29 +1,29 @@
-let input = [7,15 ,6,10, 13, 9]
-var demo = function(n) {
-    let memo = Array(input.length).fill(0)
-    return helper(n, 0)
-}
-var helper = function(n, index) {
-    if (input.length <= index) {
-        return 0
-    }
-    if (n < input[index]) {
-        return -1
-    }
+// let input = [7,15 ,6,10, 13, 9]
+// var demo = function(n) {
+//     let memo = Array(input.length).fill(0)
+//     return helper(n, 0)
+// }
+// var helper = function(n, index) {
+//     if (input.length <= index) {
+//         return 0
+//     }
+//     if (n < input[index]) {
+//         return -1
+//     }
     
-    // find the next gas station
-    let next = index
-    let gas = n
-    while (gas > 0) {
-        gas -= input[next]
-        next++
-    }
-    let res = helper(n, next)
-    if (res !== -1) return res + 1
+//     // find the next gas station
+//     let next = index
+//     let gas = n
+//     while (gas > 0) {
+//         gas -= input[next]
+//         next++
+//     }
+//     let res = helper(n, next)
+//     if (res !== -1) return res + 1
     
-    return res
-}
-console.log(demo(20))
+//     return res
+// }
+// console.log(demo(20))
 
 // function test () {
 //    console.log('start')
@@ -41,61 +41,61 @@ console.log(demo(20))
 
 // test()
 
-function Scheduler(concurrency) {
-    let _concurrency = concurrency || 2
-    let _current = 0;
-    let queue = [];
+// function Scheduler(concurrency) {
+//     let _concurrency = concurrency || 2
+//     let _current = 0;
+//     let queue = [];
 
-    // start is recursion
-    function start() {
-    	// if queue is empty, reutrn
-    	// if hit the limit, return
-        if (queue.length === 0 || _concurrency === _current) return;
+//     // start is recursion
+//     function start() {
+//     	// if queue is empty, reutrn
+//     	// if hit the limit, return
+//         if (queue.length === 0 || _concurrency === _current) return;
 
-        _current++;
-        // get fn and fn's resolve and reject for correct callback
-        const [fn, resolve, reject] = queue.shift();
-        // call fn and wait for promise
-        fn().then((res) => {
-            _current--;
-            start();
-        	// this helps fn get its res in requestHelper
-        	resolve(res)
-        }).catch((err) => {
-            _current--;
-            start();
-        	reject(err)
-        });
-    }
+//         _current++;
+//         // get fn and fn's resolve and reject for correct callback
+//         const [fn, resolve, reject] = queue.shift();
+//         // call fn and wait for promise
+//         fn().then((res) => {
+//             _current--;
+//             start();
+//         	// this helps fn get its res in requestHelper
+//         	resolve(res)
+//         }).catch((err) => {
+//             _current--;
+//             start();
+//         	reject(err)
+//         });
+//     }
 
-    // return a helper, take fn as the first argument
-    return function(fn) {
-    	// wrap fn in promise and return, and push fn, resolve and reject of this fn to queue 
-    	// IMPORTANT, this helps the application to call the correct callback when fn is done
-		return new Promise((resolve, reject) => {
-            queue.push([fn, resolve, reject]);
-            start()
-        })
-    }
-}
+//     // return a helper, take fn as the first argument
+//     return function(fn) {
+//     	// wrap fn in promise and return, and push fn, resolve and reject of this fn to queue 
+//     	// IMPORTANT, this helps the application to call the correct callback when fn is done
+// 		return new Promise((resolve, reject) => {
+//             queue.push([fn, resolve, reject]);
+//             start()
+//         })
+//     }
+// }
 
-// demo function
-const request = function() {
-	return new Promise((resolve, reject) => {
-       setTimeout(() => {
-           resolve();
-       }, 1000);
-	})
-}
+// // demo function
+// const request = function() {
+// 	return new Promise((resolve, reject) => {
+//        setTimeout(() => {
+//            resolve();
+//        }, 1000);
+// 	})
+// }
 
-// call async function 100 times
-const requestHelper = Scheduler(6);
-for (let i = 0; i < 25; i++) {
-	requestHelper(request)
-	.then((res) => {
-		console.log(i)
-	})
-}
+// // call async function 100 times
+// const requestHelper = Scheduler(6);
+// for (let i = 0; i < 25; i++) {
+// 	requestHelper(request)
+// 	.then((res) => {
+// 		console.log(i)
+// 	})
+// }
 
 // function sleep(index, time) {
 // 	return new Promise((resolve, reject) => {

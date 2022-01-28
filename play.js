@@ -434,8 +434,245 @@
 // console.log(currying(1)(2)(3))
 // console.log(currying(1,2,3))
 
-// EventEmitter
-// tree to list
-// list to tree
+// // tree to list
+// const treeToList = function(tree) {
+//   let list = []
+//   treeToListHelper(tree, list)
+//   list.sort((a,b) =>a.id-b.id)
+//   return list
+// }
+// const treeToListHelper = function(tree, list) {
+//   if (!tree) return
+
+//   for (let item of tree) {
+//     let id = item.id
+//     let name = item.name
+//     let parentId = item.parentId
+//     list.push({ id, name, parentId })
+//     treeToListHelper(item.children, list)
+//   }
+// }
+// let tree = [
+//   {
+//     id: 1,
+//     name: '部门A',
+//     parentId: 0,
+//     children: [
+//       {
+//         id: 3,
+//         name: '部门C',
+//         parentId: 1,
+//         children: [
+//           {
+//             id: 6,
+//             name: '部门F',
+//             parentId: 3
+//           }
+//         ]
+//       },
+//       {
+//         id: 4,
+//         name: '部门D',
+//         parentId: 1,
+//         children: [
+//           {
+//             id: 8,
+//             name: '部门H',
+//             parentId: 4
+//           }
+//         ]
+//       }
+//     ]
+//   },
+//   {
+//     id: 2,
+//     name: '部门B',
+//     parentId: 0,
+//     children: [
+//       {
+//         id: 5,
+//         name: '部门E',
+//         parentId: 2
+//       },
+//       {
+//         id: 7,
+//         name: '部门G',
+//         parentId: 2
+//       }
+//     ]
+//   }  
+// ];
+// console.log(treeToList(tree))
+
+// // list to tree
+// const listToTree = function(list) {
+//   let map = new Map()
+//   for (let item of list) {
+//     let name = item.name
+//     let id = item.id
+//     let parentId = item.parentId
+//     let children = map.get(parentId) || []
+//     children.push({id, name, parentId})
+//     map.set(parentId, children)
+//   }
+
+//   return appendChildren(0, map)
+// }
+// const appendChildren = function(parentId, map) {
+//    let children = map.get(parentId)
+//    if (!children) return null
+//    for (let child of children) {
+//      let res = appendChildren(child.id, map)
+//      if (res) child.children = res
+//    }
+
+//    return children
+// }
+// let list = [
+//   {id:1, name:'部门A', parentId:0},
+//   {id:2, name:'部门B', parentId:0},
+//   {id:3, name:'部门C', parentId:1},
+//   {id:4, name:'部门D', parentId:1},
+//   {id:5, name:'部门E', parentId:2},
+//   {id:6, name:'部门F', parentId:3},
+//   {id:7, name:'部门G', parentId:2},
+//   {id:8, name:'部门H', parentId:4}
+// ];
+// console.log(listToTree(list))
+
+// flatten array
+// const flattenArray = function(array) {
+//   return flattenArrayHelper(array)
+// }
+// const flattenArrayHelper = function(array) {
+//   let res = []
+
+//   for (let i = 0; i < array.length; i++) {
+//     if (Array.isArray(array[i])) {
+//       res = res.concat(flattenArrayHelper(array[i]))
+//     } else {
+//       res.push(array[i])
+//     }
+//   }
+
+//   return res
+// }
+// console.log(flattenArray([12,[1,2,3],3,[2,4,[4,[3,4],2]]]));
+
+// // dedup array
+// const dedupArray = function(array) {
+//   new Set(array)
+//   return [...new Set(array)]
+// }
+// console.log(dedupArray([12, 1, 2, 3, 3, 2, 4, 4, 3, 4, 2]))
+
+// // 大数相加
+// function add(a ,b){
+//   let indexa = a.length - 1
+//   let indexb = b.length - 1
+//   let carry = 0
+//   let res = ``
+
+//   while (indexa >= 0 || indexb >= 0) {
+//     let numa = indexa >= 0 ? a.charAt(indexa) : 0
+//     let numb = indexb >= 0 ? b.charAt(indexb) : 0
+
+//     let sum = parseInt(numa) + parseInt(numb) + carry
+//     carry = sum >= 10 ? 1 : 0
+//     sum = sum >= 10 ? sum - 10 : sum
+//     res = `${sum}${res}`
+
+//     indexa--
+//     indexb--
+//   }
+
+//   if (carry !== 0) {
+//     res = `1${res}`
+//   }
+
+//   return res
+// }
+// let a = "9007199254740991";
+// let b = "1234567899999999999";
+// console.log(add(a, b))
+
 // path to obj
+const pathToObjData = {
+  'a.b': 1,
+  'a.c': 2,
+  'a.d.e': 5,
+  'b[0]': 1,
+  'b[1]': 3,
+  'b[2].a': 2,
+  'b[2].b': 3,
+  'c': 3
+}
+const pathToObj = function(pathList) {
+  let res = {}
+  for (let path in pathList) {
+    let pathArr = path.split('.')
+    pathToObjHelper(pathArr, pathList[path], res)
+  }
+  return res
+}
+const pathToObjHelper = function(pathArr, val, res) {
+  if (pathArr.length === 0) {
+    return val
+  }
+
+  let key = pathArr.shift()
+  let obj = res[key] ? res[key] : {}
+  res[key] = pathToObjHelper(pathArr, val, obj)
+
+  return res
+}
+console.log(pathToObj(pathToObjData))
+
 // obj to path
+const objToPathData = {
+ a: {
+        b: 1,
+        c: 2,
+        d: {e: 5}
+    },
+ b: [1, 3, {a: 2, b: 3}],
+ c: 3
+} 
+const objToPath = function(obj) {
+  let res = {} 
+  objToPathHelper(obj, '', res)
+  return res
+}
+const objToPathHelper = function(obj, path, res) {
+  if (!obj) return
+
+  if (Array.isArray(obj)) {
+    for (let key in obj) {
+      const pathKey = path ? `${path}[${key}]` : `${path}${key}`
+      objToPathHelper(obj[key], pathKey, res)
+    }
+  } else if (typeof obj === 'object') {
+    for (let key in obj) {
+      const pathKey = path ? `${path}.${key}` : `${path}${key}`
+      objToPathHelper(obj[key], pathKey, res)
+    }
+  } else {
+    res[path] = obj
+  }
+}
+console.log(objToPath(objToPathData))
+
+// string to json
+const jsonString = '{ "age": 20, "name": "jack" }'
+const stringToJson = function(jsonString) {
+  return (new Function('return ' + jsonString))();
+}
+console.log(stringToJson(jsonString))
+
+// vdom to rdom
+// create a promise
+// LazyMan
+// EventEmitter
+// 实现一个继承 寄生组合继承
+// 版本号排序的方法
+// 分片思想解决大数据量渲染问题
