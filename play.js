@@ -669,7 +669,84 @@ const stringToJson = function(jsonString) {
 }
 console.log(stringToJson(jsonString))
 
+// 分红包
+const redenvelope = function(people, amount) {
+  let randSum = 0
+  let randList = []
+  let res = []
+
+  for (let i = 0; i < people; i++) {
+    let rand = Math.random()
+    randList.push(rand)
+    randSum += rand
+  }
+
+  randList.forEach((rand) => {
+    res.push(amount * rand / randSum)
+  })
+
+  return res
+}
+const redenvelopeRes = redenvelope(13, 200)
+console.log('redenvelopeRes', { redenvelopeRes, sum: redenvelopeRes.reduce((acc,val) => {
+    return acc + val 
+  })
+})
+
 // vdom to rdom
+const vdom = {
+  tag: 'DIV',
+  attrs:{
+  id:'app'
+  },
+  children: [
+    {
+      tag: 'SPAN',
+      children: [
+        { tag: 'A', children: [] }
+      ]
+    },
+    {
+      tag: 'SPAN',
+      children: [
+        { tag: 'A', children: [] },
+        { tag: 'A', children: [] }
+      ]
+    }
+  ]
+}
+/*
+把上诉虚拟Dom转化成下方真实Dom
+<div id="app">
+  <span>
+    <a></a>
+  </span>
+  <span>
+    <a></a>
+    <a></a>
+  </span>
+</div>
+*/
+const vdomToRdom = function(vdom) {
+  let tag = vdom.tag.toLowerCase()
+  let dom = document.createElement(tag)
+
+  if (vdom.attrs) {
+    for (let key in vdom.attrs) {
+      let val = vdom.attrs[key]
+      dom.setAttribute(key, val)
+    }
+  }
+
+  for (let child of vdom.children) {
+    let childNode = vdomToRdom(child)
+    dom.appendChild(childNode)
+  }
+  
+  return dom
+}
+console.log(vdomToRdom(vdom))
+
 // create a promise
 // LazyMan
 // EventEmitter
