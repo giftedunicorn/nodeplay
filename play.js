@@ -694,27 +694,27 @@ console.log('redenvelopeRes', { redenvelopeRes, sum: redenvelopeRes.reduce((acc,
 })
 
 // vdom to rdom
-const vdom = {
-  tag: 'DIV',
-  attrs:{
-  id:'app'
-  },
-  children: [
-    {
-      tag: 'SPAN',
-      children: [
-        { tag: 'A', children: [] }
-      ]
-    },
-    {
-      tag: 'SPAN',
-      children: [
-        { tag: 'A', children: [] },
-        { tag: 'A', children: [] }
-      ]
-    }
-  ]
-}
+// const vdom = {
+//   tag: 'DIV',
+//   attrs:{
+//   id:'app'
+//   },
+//   children: [
+//     {
+//       tag: 'SPAN',
+//       children: [
+//         { tag: 'A', children: [] }
+//       ]
+//     },
+//     {
+//       tag: 'SPAN',
+//       children: [
+//         { tag: 'A', children: [] },
+//         { tag: 'A', children: [] }
+//       ]
+//     }
+//   ]
+// }
 /*
 把上诉虚拟Dom转化成下方真实Dom
 <div id="app">
@@ -727,28 +727,28 @@ const vdom = {
   </span>
 </div>
 */
-const vdomToRdom = function(vdom) {
-  let tag = vdom.tag.toLowerCase()
-  let dom = document.createElement(tag)
+// const vdomToRdom = function(vdom) {
+//   let tag = vdom.tag.toLowerCase()
+//   let dom = document.createElement(tag)
 
-  if (vdom.attrs) {
-    for (let key in vdom.attrs) {
-      let val = vdom.attrs[key]
-      dom.setAttribute(key, val)
-    }
-  }
+//   if (vdom.attrs) {
+//     for (let key in vdom.attrs) {
+//       let val = vdom.attrs[key]
+//       dom.setAttribute(key, val)
+//     }
+//   }
 
-  for (let child of vdom.children) {
-    let childNode = vdomToRdom(child)
-    dom.appendChild(childNode)
-  }
-  
-  return dom
-}
-console.log(vdomToRdom(vdom))
+//   for (let child of vdom.children) {
+//     let childNode = vdomToRdom(child)
+//     dom.appendChild(childNode)
+//   }
 
-// create a promise
+//   return dom
+// }
+// console.log(vdomToRdom(vdom))
+
 // LazyMan
+// create a promise
 // EventEmitter
 // 实现一个继承 寄生组合继承
 // 版本号排序的方法
