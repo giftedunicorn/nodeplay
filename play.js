@@ -597,101 +597,101 @@
 // console.log(add(a, b))
 
 // path to obj
-const pathToObjData = {
-  'a.b': 1,
-  'a.c': 2,
-  'a.d.e': 5,
-  'b[0]': 1,
-  'b[1]': 3,
-  'b[2].a': 2,
-  'b[2].b': 3,
-  'c': 3
-}
-const pathToObj = function(pathList) {
-  let res = {}
-  for (let path in pathList) {
-    let pathArr = path.split('.')
-    pathToObjHelper(pathArr, pathList[path], res)
-  }
-  return res
-}
-const pathToObjHelper = function(pathArr, val, res) {
-  if (pathArr.length === 0) {
-    return val
-  }
+// const pathToObjData = {
+//   'a.b': 1,
+//   'a.c': 2,
+//   'a.d.e': 5,
+//   'b[0]': 1,
+//   'b[1]': 3,
+//   'b[2].a': 2,
+//   'b[2].b': 3,
+//   'c': 3
+// }
+// const pathToObj = function(pathList) {
+//   let res = {}
+//   for (let path in pathList) {
+//     let pathArr = path.split('.')
+//     pathToObjHelper(pathArr, pathList[path], res)
+//   }
+//   return res
+// }
+// const pathToObjHelper = function(pathArr, val, res) {
+//   if (pathArr.length === 0) {
+//     return val
+//   }
 
-  let key = pathArr.shift()
-  let obj = res[key] ? res[key] : {}
-  res[key] = pathToObjHelper(pathArr, val, obj)
+//   let key = pathArr.shift()
+//   let obj = res[key] ? res[key] : {}
+//   res[key] = pathToObjHelper(pathArr, val, obj)
 
-  return res
-}
-console.log(pathToObj(pathToObjData))
+//   return res
+// }
+// console.log(pathToObj(pathToObjData))
 
-// obj to path
-const objToPathData = {
- a: {
-        b: 1,
-        c: 2,
-        d: {e: 5}
-    },
- b: [1, 3, {a: 2, b: 3}],
- c: 3
-} 
-const objToPath = function(obj) {
-  let res = {} 
-  objToPathHelper(obj, '', res)
-  return res
-}
-const objToPathHelper = function(obj, path, res) {
-  if (!obj) return
+// // obj to path
+// const objToPathData = {
+//  a: {
+//         b: 1,
+//         c: 2,
+//         d: {e: 5}
+//     },
+//  b: [1, 3, {a: 2, b: 3}],
+//  c: 3
+// } 
+// const objToPath = function(obj) {
+//   let res = {} 
+//   objToPathHelper(obj, '', res)
+//   return res
+// }
+// const objToPathHelper = function(obj, path, res) {
+//   if (!obj) return
 
-  if (Array.isArray(obj)) {
-    for (let key in obj) {
-      const pathKey = path ? `${path}[${key}]` : `${path}${key}`
-      objToPathHelper(obj[key], pathKey, res)
-    }
-  } else if (typeof obj === 'object') {
-    for (let key in obj) {
-      const pathKey = path ? `${path}.${key}` : `${path}${key}`
-      objToPathHelper(obj[key], pathKey, res)
-    }
-  } else {
-    res[path] = obj
-  }
-}
-console.log(objToPath(objToPathData))
+//   if (Array.isArray(obj)) {
+//     for (let key in obj) {
+//       const pathKey = path ? `${path}[${key}]` : `${path}${key}`
+//       objToPathHelper(obj[key], pathKey, res)
+//     }
+//   } else if (typeof obj === 'object') {
+//     for (let key in obj) {
+//       const pathKey = path ? `${path}.${key}` : `${path}${key}`
+//       objToPathHelper(obj[key], pathKey, res)
+//     }
+//   } else {
+//     res[path] = obj
+//   }
+// }
+// console.log(objToPath(objToPathData))
 
-// string to json
-const jsonString = '{ "age": 20, "name": "jack" }'
-const stringToJson = function(jsonString) {
-  return (new Function('return ' + jsonString))();
-}
-console.log(stringToJson(jsonString))
+// // string to json
+// const jsonString = '{ "age": 20, "name": "jack" }'
+// const stringToJson = function(jsonString) {
+//   return (new Function('return ' + jsonString))();
+// }
+// console.log(stringToJson(jsonString))
 
-// 分红包
-const redenvelope = function(people, amount) {
-  let randSum = 0
-  let randList = []
-  let res = []
+// // 分红包
+// const redenvelope = function(people, amount) {
+//   let randSum = 0
+//   let randList = []
+//   let res = []
 
-  for (let i = 0; i < people; i++) {
-    let rand = Math.random()
-    randList.push(rand)
-    randSum += rand
-  }
+//   for (let i = 0; i < people; i++) {
+//     let rand = Math.random()
+//     randList.push(rand)
+//     randSum += rand
+//   }
 
-  randList.forEach((rand) => {
-    res.push(amount * rand / randSum)
-  })
+//   randList.forEach((rand) => {
+//     res.push(amount * rand / randSum)
+//   })
 
-  return res
-}
-const redenvelopeRes = redenvelope(13, 200)
-console.log('redenvelopeRes', { redenvelopeRes, sum: redenvelopeRes.reduce((acc,val) => {
-    return acc + val 
-  })
-})
+//   return res
+// }
+// const redenvelopeRes = redenvelope(13, 200)
+// console.log('redenvelopeRes', { redenvelopeRes, sum: redenvelopeRes.reduce((acc,val) => {
+//     return acc + val 
+//   })
+// })
 
 // vdom to rdom
 // const vdom = {
@@ -748,8 +748,112 @@ console.log('redenvelopeRes', { redenvelopeRes, sum: redenvelopeRes.reduce((acc,
 // console.log(vdomToRdom(vdom))
 
 // LazyMan
+/*
+实现一个LazyMan，可以按照以下方式调用:
+LazyMan(“Hank”)输出:
+Hi! This is Hank!
+
+LazyMan(“Hank”).sleep(10).eat(“dinner”)输出
+Hi! This is Hank!
+//等待10秒..
+Wake up after 10
+Eat dinner~
+
+LazyMan(“Hank”).eat(“dinner”).eat(“supper”)输出
+Hi This is Hank!
+Eat dinner~
+Eat supper~
+
+LazyMan(“Hank”).eat(“supper”).sleepFirst(5)输出
+//等待5秒
+Wake up after 5
+Hi This is Hank!
+Eat supper
+*/
+// class LazyMan {
+//   constructor(name) {
+//     this.tasks = []
+
+//     // 按照顺序推入task队列
+//     this.tasks.push(() => {
+//       setTimeout(() => {
+//         console.log(`Hi This is ${name}!`)
+//         this.next()
+//       }, 0)
+//     })
+
+//     // 首次执行，但是希望在同步任务之后执行
+//     setTimeout(() => {
+//       this.next()
+//     }, 0)
+
+//     return this
+//   }
+
+//   // 每次执行完一个任务，执行next，来执行下一个任务
+//   next() {
+//     let task = this.tasks.shift()
+//     task && task()
+//   }
+
+//   sleep(sec) {
+//     // 按照顺序推入task队列
+//     this.tasks.push(() => {
+//       setTimeout(() => {
+//         console.log(`Wake up after ${sec}`)
+//         this.next()
+//       }, sec*1000)
+//     })
+
+//     // 返回this，继续执行lazy man的方法
+//     return this
+//   }
+
+//   eat(meal) {
+//     // 按照顺序推入task队列
+//     this.tasks.push(() => {
+//       setTimeout(() => {
+//         console.log(`Eat ${meal}~`)
+//         this.next()
+//       }, 0)
+//     })
+
+//     return this
+//   }
+
+//   sleepFirst(sec) {
+//     // 推入task首部执行
+//     this.tasks.unshift(() => {
+//       setTimeout(() => {
+//         console.log(`Wake up after ${sec}`)
+//         this.next()
+//       }, sec*1000)
+//     })
+
+//     return this
+//   }
+// }
+// new LazyMan("Hank")
+// new LazyMan("Hank").sleep(10).eat("dinner")
+// new LazyMan("Hank").eat("dinner").eat("supper")
+// new LazyMan("Hank").eat("supper").sleepFirst(5)
+
 // create a promise
+class Mypromise {
+  constructor(fn) {
+
+  }
+
+  then(resolveCallback, rejectCallback) {
+
+  }
+}
+
 // EventEmitter
+
+
+
+
 // 实现一个继承 寄生组合继承
 // 版本号排序的方法
 // 分片思想解决大数据量渲染问题
