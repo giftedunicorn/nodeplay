@@ -838,22 +838,231 @@ Eat supper
 // new LazyMan("Hank").eat("dinner").eat("supper")
 // new LazyMan("Hank").eat("supper").sleepFirst(5)
 
-// create a promise
-class Mypromise {
-  constructor(fn) {
+// 每个一秒打印一个数字，用setTimeout来实现
+// const printNumber = function(n) {
+//   // print n, n times
+//   for (var i = 0; i < n; i++) {
+//     setTimeout(() => {
+//       console.log(i)
+//     }, i * 1000)
+//   }
 
+//   // print i to n - 1, n times
+//   for (let i = 0; i < n; i++) {
+//     setTimeout(() => {
+//       console.log(i)
+//     }, i * 1000)
+//   }
+// }
+// printNumber(10)
+
+// this指向问题
+// var length = 10;
+// function fn() {
+//  return this.length + 1;
+// }
+// var obj1 = {
+//   length: 5,
+//   test1: function() {
+//     return fn()
+//   }
+// }
+
+// obj1.test2 = fn;
+// console.log(obj1.test1.call()) // 11
+// console.log(obj1.test1()) // 11
+// console.log(obj1.test2.call()) // 11
+// console.log(obj1.test2()) // 6
+
+// var name = "window";
+// var person = {
+//   name: "person",
+//   sayName: function () {
+//     console.log(this.name);
+//   }
+// };
+// function sayName() {
+//   var sss = person.sayName;
+//   sss(); // window
+//   person.sayName(); // person
+//   (person.sayName)(); // person
+//   (b = person.sayName)(); // window
+// }
+// sayName();
+
+// var name = 'window'
+// var person1 = {
+//   name: 'person1',
+//   foo1: function () {
+//     console.log(this.name)
+//   },
+//   foo2: () => console.log(this.name),
+//   foo3: function () {
+//     return function () {
+//       console.log(this.name)
+//     }
+//   },
+//   foo4: function () {
+//     return () => {
+//       console.log(this.name)
+//     }
+//   }
+// }
+// var person2 = { name: 'person2' }
+
+// // 隐式绑定，肯定是person1
+// person1.foo1(); // person1
+// // 隐式绑定和显示绑定的结合，显示绑定生效，所以是person2
+// person1.foo1.call(person2); // person2
+
+// // foo2()是一个箭头函数，不适用所有的规则
+// person1.foo2() // window
+// // foo2依然是箭头函数，不适用于显示绑定的规则
+// person1.foo2.call(person2) // window
+
+// // 获取到foo3，但是调用位置是全局作用于下，所以是默认绑定window
+// person1.foo3()() // window
+// // foo3显示绑定到person2中，但是拿到的返回函数依然是在全局下调用，所以依然是window
+// person1.foo3.call(person2)() // window
+// // 拿到foo3返回的函数，通过显示绑定到person2中，所以是person2
+// person1.foo3().call(person2) // person2
+
+// // foo4()的函数返回的是一个箭头函数，箭头函数的执行找上层作用域，是person1
+// person1.foo4()() // person1
+// // foo4()显示绑定到person2中，并且返回一个箭头函数，箭头函数找上层作用域，是person2
+// person1.foo4.call(person2)() // person2
+// // foo4返回的是箭头函数，箭头函数只看上层作用域
+// person1.foo4().call(person2) // person1
+
+
+// var name = 'window'
+// function Person (name) {
+//   this.name = name
+//   this.foo1 = function () {
+//     console.log(this.name)
+//   },
+//   this.foo2 = () => console.log(this.name),
+//   this.foo3 = function () {
+//     return function () {
+//       console.log(this.name)
+//     }
+//   },
+//   this.foo4 = function () {
+//     return () => {
+//       console.log(this.name)
+//     }
+//   }
+// }
+// var person1 = new Person('person1')
+// var person2 = new Person('person2')
+
+// // 隐式绑定
+// person1.foo1() // peron1
+// // 显示绑定优先级大于隐式绑定
+// person1.foo1.call(person2) // person2
+
+// // foo是一个箭头函数，会找上层作用域中的this，那么就是person1
+// person1.foo2() // person1
+// // foo是一个箭头函数，使用call调用不会影响this的绑定，和上面一样向上层查找
+// person1.foo2.call(person2) // person1
+
+// // 调用位置是全局直接调用，所以依然是window（默认绑定）
+// person1.foo3()() // window
+// // 最终还是拿到了foo3返回的函数，在全局直接调用（默认绑定）
+// person1.foo3.call(person2)() // window
+// // 拿到foo3返回的函数后，通过call绑定到person2中进行了调用
+// person1.foo3().call(person2) // person2
+
+// // foo4返回了箭头函数，和自身绑定没有关系，上层找到person1
+// person1.foo4()() // person1
+// // foo4调用时绑定了person2，返回的函数是箭头函数，调用时，找到了上层绑定的person2
+// person1.foo4.call(person2)() // person2
+// // foo4调用返回的箭头函数，和call调用没有关系，找到上层的person1
+// person1.foo4().call(person2) // person1
+
+// var name = 'window'
+// function Person (name) {
+//   this.name = name
+//   this.obj = {
+//     name: 'obj',
+//     foo1: function () {
+//       return function () {
+//         console.log(this.name)
+//       }
+//     },
+//     foo2: function () {
+//       return () => {
+//         console.log(this.name)
+//       }
+//     }
+//   }
+// }
+// var person1 = new Person('person1')
+// var person2 = new Person('person2')
+
+// // obj.foo1()返回一个函数，这个函数在全局作用于下直接执行（默认绑定）
+// person1.obj.foo1()() // window
+// // 最终还是拿到一个返回的函数（虽然多了一步call的绑定），这个函数在全局作用于下直接执行（默认绑定）
+// person1.obj.foo1.call(person2)() // window
+// person1.obj.foo1().call(person2) // person2
+
+// // 拿到foo2()的返回值，是一个箭头函数，箭头函数在执行时找上层作用域下的this，就是obj
+// person1.obj.foo2()() // obj
+// // foo2()的返回值，依然是箭头函数，但是在执行foo2时绑定了person2，箭头函数在执行时找上层作用域下的this，找到的是person2
+// person1.obj.foo2.call(person2)() // person2
+// // foo2()的返回值，依然是箭头函数，箭头函数通过call调用是不会绑定this，所以找上层作用域下的this是obj
+// person1.obj.foo2().call(person2) // obj
+
+
+// [['a', 'b'], ['n', 'm'], ['0', '1']]
+// ['an0', 'am0', 'an1', 'am1', 'bn0', 'bm0', 'bn1', 'bm0']
+// const permutation = function(array) {
+//   let res = []
+//   helper(array, 0, [], res)
+//   return res
+// }
+
+// const helper = function(array, index, path, res) {
+//   if (array.length  === index) {
+//     res.push(path.join(''))
+//     return
+//   }
+
+//   for (let i = 0; i < array[index].length; i++) {
+//     let char = array[index][i]
+//     helper(array, index + 1, [...path, char], res)
+//   }
+// }
+// console.log(permutation([['a', 'b'], ['n', 'm'], ['0', '1']]))
+
+// create a promise
+class MyPromise {
+  constructor(fn) {
+    
+    const resolve = function(data) {
+
+    }
+    const reject = function(data) {
+
+    }
+    fn(resolve, reject)
   }
 
   then(resolveCallback, rejectCallback) {
 
   }
 }
+let promise1 = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(123);
+  }, 2000);
+});
+promise1.then(res => {
+  console.log(res); //过两秒输出123
+})
 
+// 写一个事件代理函数，需要判断child是parent的子节点
 // EventEmitter
-
-
-
-
 // 实现一个继承 寄生组合继承
 // 版本号排序的方法
 // 分片思想解决大数据量渲染问题
