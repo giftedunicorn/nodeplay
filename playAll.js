@@ -28,6 +28,57 @@ const target = {
 }
 console.log(deepClone(target))
 
+// deep clone with circle and date
+function deepClone(obj, map = new Map()) {
+  if (!obj) return obj
+  if (map.has(obj)) { // 判断是否循环引用
+    return map.get(obj) 
+  }
+
+  let newObj = Array.isArray(obj) ? [] : {}
+  map.set(obj, newObj);
+  if (Array.isArray(obj)) {
+      for (let key in obj) {
+          let val = obj[key]
+          newObj[key] = deepClone(val, map)
+      }
+  } else if (typeof obj === 'object') {
+      // if obj is date
+      // if obj is timestamp? then the code will not enter here anyway
+      if (isDate(obj)) {
+        newObj = new Date(obj)
+      }
+      for (let key in obj) {
+          let val = obj[key]
+          newObj[key] = deepClone(val, map)
+      }
+  } else {
+      newObj = obj
+  }
+
+  return newObj
+}
+
+const isDate = function(date) {
+  if (Object.prototype.toString.call(date) === "[object Date]") {
+    return true
+  }
+  return false
+}
+
+console.log(deepClone(1)) // 1
+console.log(deepClone(null)) // null
+console.log(deepClone(undefined)) // undefined
+console.log(deepClone([1, 2, 3]))
+console.log(deepClone({ a: new Date(), b: null, c: 123, d: [1,2,3] }))
+const a = {
+  b: {
+    c: null,
+  },
+};
+a.b.c = a;
+console.log(deepClone(a))
+
 // debounce
 const debounce = function(fn, timeout = 300) {
 	let timer = null
@@ -122,7 +173,7 @@ promiseRace(inputs)
 })
 
 // promise controll
-const scheduler = function(max = 3) {
+const Scheduler = function(max = 3) {
 	let currentJobs = 0
 	let queue = []
 
@@ -149,9 +200,9 @@ const scheduler = function(max = 3) {
 		})
 	}
 }
-let helper = scheduler(6)
+let scheduler = Scheduler(6)
 for (let i = 0; i < 25; i++) {
-	helper(() => request(i))
+	scheduler(() => request(i))
     .then((res) => {
 		console.log('scheduler', res)
 	})
@@ -182,10 +233,11 @@ console.log('reduce', reduceRes)
 // my AJAX 
 function ajax(method, url, body = {}) {
 	return new Promise((resolve, reject) => {
+    // 0. create XMLHttpRequest instance
 		let xhr = new XMLHttpRequest()
 		// 1. define request
 		xhr.open(method, url, true)
-.     xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.setRequestHeader("Content-Type", "application/json");
 		// 2. define response
 		xhr.onload = () => {
 			if (xhr.status >= 200 && xhr.status < 300) {
@@ -289,12 +341,12 @@ const context = {
 	name: 'alex'
 }
 const myBindTestFn = function(name, age, school){
-	console.log(name) // 'An'
-	console.log(age) // 22
-	console.log(school) // '家里蹲大学'
+	console.log(name) // 'Ann'
+	console.log(age) // 32
+	console.log(school) // '126'
 }
-let result = myBindTestFn.myBind(context, 'Ann')
-result(32, '126')
+let myBindFn = myBindTestFn.myBind(context, 'Ann')
+myBindFn(32, '126')
 
 // json to string
 const jsonToString = function(obj) {
@@ -355,7 +407,6 @@ String.prototype.myTrim = function() {
 			if (string.charAt(i) !== ' ') {
 				return string.substring(0, i + 1)
 			}
-
 		}
 
 		return string
@@ -408,7 +459,6 @@ const dom2json = function(domTree) {
 		// dfs, it will return json of this child
 		obj.children.push(dom2json(child))
 	})
-	// return obj
 	return obj
 }
 
@@ -787,8 +837,6 @@ class LazyMan {
     setTimeout(() => {
       this.next()
     }, 0)
-
-    return this
   }
 
   // 每次执行完一个任务，执行next，来执行下一个任务
@@ -848,7 +896,7 @@ const printNumber = function(n) {
     }, i * 1000)
   }
 
-  // print i to n - 1, n times
+  // print 0 to n - 1, n times
   for (let i = 0; i < n; i++) {
     setTimeout(() => {
       console.log(i)
@@ -860,7 +908,7 @@ printNumber(6)
 // this的指向问题，看题目说答案
 var length = 10;
 function fn() {
- return this.length + 1;
+  return this.length + 1;
 }
 var obj1 = {
   length: 5,
@@ -1017,19 +1065,18 @@ person1.obj.foo2().call(person2) // obj
 // ['an0', 'am0', 'an1', 'am1', 'bn0', 'bm0', 'bn1', 'bm0']
 const permutation = function(array) {
   let res = []
-  helper(array, 0, [], res)
+  permutationHelper(array, 0, [], res)
   return res
 }
-
-const helper = function(array, index, path, res) {
-  if (array.length  === index) {
+const permutationHelper = function(array, index, path, res) {
+  if (array.length === index) {
     res.push(path.join(''))
     return
   }
 
   for (let i = 0; i < array[index].length; i++) {
     let char = array[index][i]
-    helper(array, index + 1, [...path, char], res)
+    permutationHelper(array, index + 1, [...path, char], res)
   }
 }
 console.log(permutation([['a', 'b'], ['n', 'm'], ['0', '1']]))
@@ -1046,11 +1093,11 @@ const sortByVersion = function(versions) {
       index++
     }
 
-    if (alist[index] && !blist[index]) return -1
-    else if (!alist[index] && blist[index]) return 1
-    else if (alist[index] !== blist[index]) return blist[index] - alist[index]
+    if (alist[index] && !blist[index]) return -1 // if a is longer, a should be larger
+    else if (!alist[index] && blist[index]) return 1 // if b is longer, b should be larger
+    else if (alist[index] !== blist[index]) return blist[index] - alist[index] // if a != b, return b - a 
 
-    return 0
+    return 0 // a = b
   })
 
   return versions
@@ -1195,11 +1242,11 @@ function Parent(name) {
   }
 }
 function Child(name) {
-  Parent.call(this, name)
+  Parent.call(this, name) // step 1
   this.name = name
 }
-Child.prototype = Object.create(Parent.prototype)
-Child.prototype.constructor = Child
+Child.prototype = Object.create(Parent.prototype) // step 2
+Child.prototype.constructor = Child // step 3
 Parent.prototype.play = () => {
   console.log("222")
 }
@@ -1215,7 +1262,6 @@ let total = 10000
 let current = 0
 let max = 20 // create 20 items in one frame
 let ul = document.getElementById('thelonglist')
-
 const perform = function() {
   if (current >= total) return
 
