@@ -8,6 +8,7 @@
 // my reduce
 // my AJAX 
 // my instanceof
+// my typeof
 // my new
 // my call
 // my apply
@@ -36,8 +37,9 @@
 // 实现一个继承，寄生组合继承
 // 题目描述: 渲染百万条结构简单的大数据时 怎么使用分片思想优化渲染
 // 写一个事件代理函数，需要判断child是parent的子节点
-
-
+// 给定一个不含重复数字的数组arr,指定个数n,目标和sum,判断是否含有由n个不同数字相加得到sum的情况，leetcode 40 变种， 数字不得重复使用
+// function request(urls, maxNumber, callback) 要求编写函数实现，根据urls数组内的url地址进行并发网络请求，最大并发数maxNumber，当所有请求完毕后调用callback函数(已知请求网络的方法可以使用fetch api)
+ 
 // deep clone
 const deepClone = function(obj) {
 
@@ -165,6 +167,17 @@ const myInstanceofTest = [1,2,3]
 console.log(myInstanceof(myInstanceofTest, Array));  // true
 console.log(myInstanceof(myInstanceofTest, Object));  // true
 console.log(myInstanceof(myInstanceofTest, Function));  // false
+
+// my typeof
+const myTypeof = function(target) {
+
+}
+console.log(myTypeof({}))
+console.log(myTypeof([]))
+console.log(myTypeof(Function))
+console.log(myTypeof(123))
+console.log(myTypeof(null))
+console.log(myTypeof(''))
 
 // my new
 const myNew = function(fn, ...args) {
@@ -639,3 +652,33 @@ function proxyEvent(event, callback, parent, child) {
 proxyEvent('click', (e) => {
   console.log(e.target.innerText)
 }, '#proxy', 'li')
+
+// 给定一个不含重复数字的数组arr,指定个数n,目标和sum,判断是否含有由n个不同数字相加得到sum的情况，leetcode 40 变种， 数字不得重复使用s
+function combinationSum(nums, n, sum) {
+}
+console.log(combinationSum([10,1,2,7,6,1,5], 3, 8))
+
+
+// function request(urls, maxNumber, callback) 要求编写函数实现，
+// 根据urls数组内的url地址进行并发网络请求，最大并发数maxNumber,
+// 当所有请求完毕后调用callback函数(已知请求网络的方法可以使用fetch api)
+function request(urls, maxNumber, callback) {
+
+}
+const urls = [
+  "https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/coordinate?latitude=38.9&longitude=-77.03",
+  "https://www.timeapi.io/api/Time/current/ip?ipAddress=237.71.232.203",
+  "https://www.timeapi.io/api/TimeZone/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/coordinate?latitude=38.9&longitude=-77.03",
+  "https://www.timeapi.io/api/Time/current/ip?ipAddress=237.71.232.203",
+  "https://www.timeapi.io/api/TimeZone/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/coordinate?latitude=38.9&longitude=-77.03",
+  "https://www.timeapi.io/api/Time/current/ip?ipAddress=237.71.232.203",
+  "https://www.timeapi.io/api/TimeZone/zone?timeZone=Europe/Amsterdam",
+]
+console.log(request(urls, 3, (res) => {
+  console.log(res)
+}))

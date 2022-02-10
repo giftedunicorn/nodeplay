@@ -60,10 +60,11 @@ function deepClone(obj, map = new Map()) {
 }
 
 const isDate = function(date) {
-  if (Object.prototype.toString.call(date) === "[object Date]") {
-    return true
-  }
-  return false
+  return date instanceof Date
+  // if (Object.prototype.toString.call(date) === "[object Date]") {
+  //   return true
+  // }
+  // return false
 }
 
 console.log(deepClone(1)) // 1
@@ -172,7 +173,7 @@ promiseRace(inputs)
 	console.log('promiseRace', res)
 })
 
-// promise controll
+// promise schedule
 const Scheduler = function(max = 3) {
 	let currentJobs = 0
 	let queue = []
@@ -277,6 +278,20 @@ const myInstanceofTest = [1,2,3]
 console.log(myInstanceof(myInstanceofTest, Array));  // true
 console.log(myInstanceof(myInstanceofTest, Object));  // true
 console.log(myInstanceof(myInstanceofTest, Function));  // false
+
+// my typeof
+const myTypeof = function(target) {
+  let type = Object.prototype.toString.apply(target)
+  type = type.split(' ')[1]
+  return type.slice(0, -1).toLowerCase()
+}
+console.log(myTypeof({}))
+console.log(myTypeof([]))
+console.log(myTypeof(Function))
+console.log(myTypeof(123))
+console.log(myTypeof(null))
+console.log(myTypeof(''))
+console.log(myTypeof(new Date()))
 
 // my new
 const myNew = function(fn, ...args) {
@@ -1303,3 +1318,83 @@ proxyEvent('click', (e) => {
   console.log(e.target.innerText)
 }, '#proxy', 'li')
 
+// 给定一个不含重复数字的数组arr,指定个数n,目标和sum,判断是否含有由n个不同数字相加得到sum的情况，leetcode 40 变种， 数字不得重复使用
+function combinationSum(nums, n, sum) {
+  let res = []
+  nums.sort((a, b) => a - b)
+  combinationSumHelper(nums, n, sum, 0, [], res)
+  return res
+}
+function combinationSumHelper(nums, n, sum, index, path, res) {
+  if (path.length === n && sum === 0) {
+    res.push(path)
+    return
+  }
+  if (sum < 0 || path.length > n) {
+    return
+  }
+
+  let set = new Set()
+  for (let i = index; i < nums.length; i++) {
+    let current = nums[i]
+    if (set.has(current)) continue
+    set.add(current)
+    combinationSumHelper(nums, n, sum - current, i + 1, [...path, current], res)
+  }
+}
+console.log(combinationSum([10,1,2,7,6,1,5], 3, 8))
+
+// function request(urls, maxNumber, callback) 要求编写函数实现，
+// 根据urls数组内的url地址进行并发网络请求，最大并发数maxNumber,
+// 当所有请求完毕后调用callback函数(已知请求网络的方法可以使用fetch api)
+function request(urls, maxNumber, callback) {
+  let queue = []
+  let currentJobs = 0
+  let results = []
+  const request = require('request');
+
+  const run = function() {
+    if (queue.length === 0 || currentJobs >= maxNumber) return
+
+    currentJobs++
+    const url = queue.shift()
+    console.log('started', url)
+    request(url, (error, response, body) => {
+      console.log('finshed', url)
+      currentJobs--
+      if (error) {
+        results.push({ error, time: new Date()})
+      } else {
+        results.push({ res: body, time: new Date()})
+      }
+
+      if (results.length === urls.length) {
+        callback(results)
+        return
+      }
+      run()
+    })
+  }
+
+  urls.forEach((url) => {
+    queue.push(url)
+    run(url)
+  })
+}
+const urls = [
+  "https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/coordinate?latitude=38.9&longitude=-77.03",
+  "https://www.timeapi.io/api/Time/current/ip?ipAddress=237.71.232.203",
+  "https://www.timeapi.io/api/TimeZone/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/coordinate?latitude=38.9&longitude=-77.03",
+  "https://www.timeapi.io/api/Time/current/ip?ipAddress=237.71.232.203",
+  "https://www.timeapi.io/api/TimeZone/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam",
+  "https://www.timeapi.io/api/Time/current/coordinate?latitude=38.9&longitude=-77.03",
+  "https://www.timeapi.io/api/Time/current/ip?ipAddress=237.71.232.203",
+  "https://www.timeapi.io/api/TimeZone/zone?timeZone=Europe/Amsterdam",
+]
+console.log(request(urls, 3, (res) => {
+  console.log(res)
+}))
