@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+            .container{
+            	/*display: flex;*/
+            	height: 500px;
+            	display: grid;
+            	grid-template-columns: auto 1fr;
+            }
+            .aside{
+            	width: 200px;
+            	background-color: red;
+            }
+            .main{
+            	flex: 1;
+            	background-color: yellow;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+        	<div class="aside"></div>
+        	<div class="main"></div>
+        </div>
+    </body>
+</html>

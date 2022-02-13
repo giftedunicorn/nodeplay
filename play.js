@@ -1,5 +1,4 @@
-// deep clone
-// deep clone with date and circle object
+// deep clone (for fn, date type and circle object)
 // debounce
 // throttle
 // promise all
@@ -54,7 +53,11 @@ const target = {
     city: 'Pune',
     number: 123,
   },
-  keys: [1,2,3,4]
+  keys: [1,2,3,4],
+  fn1: () => {
+    let a = 1
+    console.log('fn1', a)
+  }
 }
 console.log(deepClone(target))
 console.log(deepClone(1)) // 1

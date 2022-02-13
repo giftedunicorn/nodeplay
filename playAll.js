@@ -28,37 +28,44 @@ const target = {
 }
 console.log(deepClone(target))
 
-// deep clone with circle and date
-function deepClone(obj, map = new Map()) {
+// deep clone for circle and date and function
+const deepClone = function(obj, map = new Map()) {
   if (!obj) return obj
   if (map.has(obj)) { // 判断是否循环引用
     return map.get(obj) 
   }
 
-  let newObj = Array.isArray(obj) ? [] : {}
-  map.set(obj, newObj);
-  if (Array.isArray(obj)) {
-      for (let key in obj) {
-          let val = obj[key]
-          newObj[key] = deepClone(val, map)
-      }
-  } else if (typeof obj === 'object') {
-      // if obj is date
-      // if obj is timestamp? then the code will not enter here anyway
-      if (isDate(obj)) {
-        newObj = new Date(obj)
-      }
-      for (let key in obj) {
-          let val = obj[key]
-          newObj[key] = deepClone(val, map)
-      }
+  let newObj
+  if (Object.prototype.toString.call(obj) == "[object Object]") {
+    newObj = {}
+    map.set(obj, newObj);
+    for (let key in obj) {
+      let val = obj[key]
+      newObj[key] = deepClone(val, map)
+    }
+  } else if (Object.prototype.toString.call(obj) == "[object Array]") {
+    newObj = []
+    map.set(obj, newObj);
+    for (let key in obj) {
+      let val = obj[key]
+      newObj[key] = deepClone(val, map)
+    }
+  } else if (Object.prototype.toString.call(obj) == "[object Function]") {
+    newObj = obj.clone() 
+  } else if (obj.constructor === Object.prototype.toString.call(obj) == "[object Date]") {
+    newObj = new Date(obj)
   } else {
-      newObj = obj
+    newObj = obj
   }
 
   return newObj
 }
-
+Function.prototype.clone = function() {
+  var newfun = new Function('return ' + this.toString())();
+  for (var key in this)
+    newfun[key] = this[key];
+  return newfun;
+};
 const isDate = function(date) {
   return date instanceof Date
   // if (Object.prototype.toString.call(date) === "[object Date]") {
@@ -66,7 +73,6 @@ const isDate = function(date) {
   // }
   // return false
 }
-
 console.log(deepClone(1)) // 1
 console.log(deepClone(null)) // null
 console.log(deepClone(undefined)) // undefined
