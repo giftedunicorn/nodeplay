@@ -38,7 +38,13 @@
 // 写一个事件代理函数，需要判断child是parent的子节点
 // 给定一个不含重复数字的数组arr,指定个数n,目标和sum,判断是否含有由n个不同数字相加得到sum的情况，leetcode 40 变种， 数字不得重复使用
 // function request(urls, maxNumber, callback) 要求编写函数实现，根据urls数组内的url地址进行并发网络请求，最大并发数maxNumber，当所有请求完毕后调用callback函数(已知请求网络的方法可以使用fetch api)
- 
+// 手写代码：写个单例模式
+// 请实现抽奖函数rand，保证随机性，输入为表示对象数组，对象有属性n表示人名，w表示权重，随机返回一个中奖人名，中奖概率和w成正比
+// 实现这个u, u.console('breakfast').setTimeout(3000).console('lunch').setTimeout(3000).console('dinner')
+
+
+
+
 // deep clone
 const deepClone = function(obj) {
 

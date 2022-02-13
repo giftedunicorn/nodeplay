@@ -854,7 +854,7 @@ class LazyMan {
       }, 0)
     })
 
-    // 首次执行，但是希望在同步任务之后执行
+    // 关键不然不会执行，首次执行，但是希望在同步任务之后执行
     setTimeout(() => {
       this.next()
     }, 0)
@@ -1404,3 +1404,84 @@ const urls = [
 console.log(request(urls, 3, (res) => {
   console.log(res)
 }))
+
+// 实现这个u, u.console('breakfast').setTimeout(3000).console('lunch').setTimeout(3000).console('dinner')
+class U {
+  constructor() {
+    this.tasks = []
+
+    // 关键不然不会执行，首次执行，但是希望在同步任务之后执行
+      setTimeout(() => {
+        this.next()
+      }, 0)
+  }
+
+  console(name) {
+    this.tasks.push(() => {
+      setTimeout(() => {
+        console.log(name)
+        this.next()
+      }, 0)
+    })
+    return this
+  }
+  setTimeout(time) {
+    this.tasks.push(() => {
+      setTimeout(() => {
+        console.log(time)
+        this.next()
+      }, time)
+    })
+    return this
+  }
+  next() {
+    let task = this.tasks.shift()
+    if (task) task()
+  }
+}
+const u = new U()
+u.console('breakfast').setTimeout(3000).console('lunch').setTimeout(3000).console('dinner')
+
+// 手写代码：写个单例模式
+// es6 class
+class SingleClass {
+  constructor() {
+    this.instance = null
+  }
+
+  static getInstance(name) {
+    if (this.instance) return this.instance
+
+    this.instance = new SingleClass(name)
+    return this.instance
+  }
+}
+let Jack = SingleClass.getInstance('Jack');
+let Tom = SingleClass.getInstance('Tom');
+console.log( Jack === Tom ); // true
+
+/*
+请实现抽奖函数rand，保证随机性
+输入为表示对象数组，对象有属性n表示人名，w表示权重
+随机返回一个中奖人名，中奖概率和w成正比
+*/
+let people = [
+  { n: 'p1', w: 1 }, // 0 - 1
+  { n: 'p2', w: 100 }, // 1 - 101
+  { n: 'p3', w: 100 } // 101 - 201
+];
+let rand = function (p) {
+  const totalWeight = p.reduce(function (pre, cur, index) {
+    // 1. get the total weight, create a range for each person
+    cur.startW = pre;
+    return cur.endW = pre + cur.w
+  }, 0)
+  // 1. get a random number between the total weight
+  let random = Math.ceil(Math.random() * totalWeight)
+  // console.log(totalWeight, p, random)
+
+  // use array.find method to choose the person who has the random number
+  let selectPeople = p.find(people => people.startW < random && people.endW > random)
+  return selectPeople.n
+};
+console.log(rand(people))
