@@ -1510,3 +1510,48 @@ const getPathValueHelper = function(map, path, currentPath) {
   }
 }
 console.log(getPathValue({a:{b:[1,2,3]}}, 'a.b[1]'))
+
+// 给数组中的字符串编号，f(['ab', 'c', 'd', 'ab', 'c']) => ['ab1', 'c1', 'd', 'ab2', 'c2']，写完后问了一下时间和空间复杂度。
+const label = function(list) {
+  let map = new Map()
+  let res = []
+
+  for (let i = 0; i < list.length; i++) {
+    let val = list[i]
+    if (map.has(val)) {
+      let count = map.get(val) || 0
+      if (count === 1) {
+        let index = res.indexOf(val)
+        res[index] = `${val}1`
+      }
+      count++
+      map.set(val, count)
+      res.push(`${val}${count}`)
+    } else {
+      map.set(val, 1)
+      res.push(`${val}`)
+    }
+  }
+
+  return res
+}
+console.log(label(['ab', 'c', 'd', 'ab', 'c']))
+
+// 实现千分位格式化函数
+const toThousands = function(num) {
+  let array = num.toString().split('')
+  let count = 0
+  let res = ``
+
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (count && count % 3 === 0) {
+      res = `${array[i]},${res}`
+    } else {
+      res = `${array[i]}${res}`
+    }
+    count++
+  }
+
+  return res
+}
+console.log(toThousands(11112312312))
