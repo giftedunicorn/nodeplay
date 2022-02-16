@@ -41,7 +41,7 @@
 // 手写代码：写个单例模式
 // 请实现抽奖函数rand，保证随机性，输入为表示对象数组，对象有属性n表示人名，w表示权重，随机返回一个中奖人名，中奖概率和w成正比
 // 实现这个u, u.console('breakfast').setTimeout(3000).console('lunch').setTimeout(3000).console('dinner')
-
+// getPathValue({a:{b:[1,2,3]}}, 'a.b[0]') => 1
 
 
 

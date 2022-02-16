@@ -150,7 +150,7 @@ const request = function(id) {
        setTimeout(() => {
            resolve(`${id}: ${timeout}ms`);
        }, timeout);
-	})	
+	})
 }
 let inputs = []
 for (let i = 0; i < 22; i++) {
@@ -1485,3 +1485,28 @@ let rand = function (p) {
   return selectPeople.n
 };
 console.log(rand(people))
+
+// getPathValue({a:{b:[1,2,3]}}, 'a.b[0]') => 1
+const getPathValue = function(map, path) {
+  return getPathValueHelper(map, path, '')
+}
+const getPathValueHelper = function(map, path, currentPath) {
+  if (path === currentPath) return map
+
+  if (Object.prototype.toString.call(map) === '[object Object]') {
+    for (let key in map) {
+      let val = map[key]
+      let nextPath = currentPath ? `${currentPath}.${key}` : `${currentPath}${key}`
+      let res = getPathValueHelper(val, path, nextPath)
+      if (res) return res
+    }
+  } else if (Object.prototype.toString.call(map) === '[object Array]') {
+    for (let key in map) {
+      let val = map[key]
+      let nextPath = currentPath ? `${currentPath}[${key}]` : `${currentPath}${key}`
+      let res = getPathValueHelper(val, path, nextPath)
+      if (res) return res
+    }
+  }
+}
+console.log(getPathValue({a:{b:[1,2,3]}}, 'a.b[1]'))
