@@ -371,31 +371,37 @@ myBindFn(32, '126')
 
 // json to string
 const jsonToString = function(obj) {
-	let str = `{`
+  if (!obj) return obj
+  let str = ``
 
-	let keys = Object.keys(obj)
-	for (let i = 0; i < keys.length; i++) {
-		let key = keys[i]
-		let val = obj[key]
-		if (Array.isArray(val)) {
-			let arr = `[`
-			for (let j = 0; j < val.length; j++) {
-				let item = val[j]
-				arr = `${arr}${item}`
-				if (j !== val.length - 1) arr = `${arr},`
-			}
-			str = `${str}"${key}":${arr}]`
-		} else if (typeof val === 'object') {
-			let res = jsonToString(val)
-			str = `${str}"${key}":${res}`
-		} else {
-			str = `${str}"${key}":${val}`
-		}
-		if (i !== keys.length - 1) str = `${str},`
-	}
+  if (Object.prototype.toString.call(obj) === '[object Array]') {
+    str = `[`
+    let keys = Object.keys(obj)
+    for (let j = 0; j < keys.length; j++) {
+      let key = keys[j]
+      let val = obj[key]
+      let res = jsonToString(val)
+      str = `${str}${res}`
+      if (j !== keys.length - 1) str = `${str},` // remove the last ,
+    }
+    str = `${str}]`
+  } else if (Object.prototype.toString.call(obj) === '[object Object]') {
+    str = `{`
+    let keys = Object.keys(obj)
+    for (let j = 0; j < keys.length; j++) {
+      let key = keys[j]
+      let val = obj[key]
+      let res = jsonToString(val)
+      str = `${str}"${key}":${res}`
+      if (j !== keys.length - 1) str = `${str},` // remove the last ,
+    }
+    str = `${str}}`
+  } else {
+    // other than array or object
+    return `${obj}`
+  }
 
-	str = `${str}}`
-	return str
+  return str
 }
 let jsonToStringTest = {
     a: 11,
