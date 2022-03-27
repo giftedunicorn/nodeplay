@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "server": "node benchmark.js",
+    "wrk": "wrk -t24 -c140 -d20s http://127.0.0.1:1337",
+    "ab": "ab -n10000 -c100 http://127.0.0.1:1337/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
